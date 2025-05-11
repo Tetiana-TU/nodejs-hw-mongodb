@@ -71,7 +71,7 @@ export const deleteContactController = async(reg, res, next)=>{
   const contact = await deleteContact(contactId);
 
   if (!contact) {
-    next(createHttpError(404, 'Student not found'));
+    next(createHttpError(404, 'Contact not found'));
     return;
   }
 
