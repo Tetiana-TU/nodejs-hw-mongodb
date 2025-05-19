@@ -32,7 +32,7 @@ export const parsePaginationParams = (query) => {
     message: 'Successfully found contacts!',
     data: {
       data: [
-        /* contacts */
+        
       ],
       page: parsedPage,
       perPage: parsedPerPage,
