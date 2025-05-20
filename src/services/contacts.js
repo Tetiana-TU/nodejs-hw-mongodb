@@ -14,7 +14,7 @@ export const getAllContacts = async ({
 
   const skip = (page - 1) * perPage;
 
-  const totalItems = 6;
+  const totalItems = await Contact.countDocuments(filter);
 
   const contacts = await Contact.find(filter)
     .skip(skip)
