@@ -10,18 +10,6 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 
-// export const handleGetAllContacts = async (req, res) => {
-//   const { page = 1, perPage = 10 } = req.query;
-
-//   const result = await getAllContacts({ page, perPage });
-
-//   res.status(200).json({
-//     status: 200,
-//     message: 'Successfully found contacts!',
-//     data: result,
-//   });
-// };
-
 export const handleGetContactById = async (req, res, next) => {
   const { contactId } = req.params;
   const contact = await getContactById(contactId);
