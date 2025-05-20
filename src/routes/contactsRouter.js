@@ -1,6 +1,6 @@
 import express from 'express';
 import {
-  handleGetAllContacts,
+  getContactsController,
   handleGetContactById,
   createContactController,
   patchContactController,
@@ -13,7 +13,7 @@ import { isValidId } from '../middlewares/isValidId.js';
 import { updateContactSchema } from '../validation/contactsValidation.js';
 const router = express.Router();
 
-router.get('/', ctrlWrapper(handleGetAllContacts));
+router.get('/', ctrlWrapper(getContactsController));
 router.get('/:contactId', isValidId, ctrlWrapper(handleGetContactById));
 router.post(
   '/',

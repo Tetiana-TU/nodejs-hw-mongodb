@@ -3,10 +3,10 @@ import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { SORT_ORDER } from '../index.js';
 
 export const getAllContacts = async ({
-  page = 1,
-  perPage = 10,
-  sortOrder = SORT_ORDER.ASC,
+  page = 2,
+  perPage = 4,
   sortBy = 'name',
+  sortOrder = SORT_ORDER.ASC,
   filter = {},
 }) => {
   page = Number(page);
@@ -22,9 +22,9 @@ export const getAllContacts = async ({
     .sort({ [sortBy]: sortOrder === SORT_ORDER.ASC ? 1 : -1 })
     .exec();
   const paginationData = calculatePaginationData({
-    totalItems,
     perPage,
     page,
+    totalItems,
   });
   return {
     data: contacts,

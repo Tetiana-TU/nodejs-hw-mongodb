@@ -5,7 +5,7 @@ export const parseFilterParams = (query) => {
     filter.contactType = query.type;
   }
 
-  if (typeof query.isFavourite !== 'undefined') {
+  if (query.isFavourite !== undefined) {
     filter.isFavourite = query.isFavourite === 'true';
   }
 

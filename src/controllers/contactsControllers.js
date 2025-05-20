@@ -10,17 +10,17 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 
-export const handleGetAllContacts = async (req, res) => {
-  const { page = 1, perPage = 10 } = req.query;
+// export const handleGetAllContacts = async (req, res) => {
+//   const { page = 1, perPage = 10 } = req.query;
 
-  const result = await getAllContacts({ page, perPage });
+//   const result = await getAllContacts({ page, perPage });
 
-  res.status(200).json({
-    status: 200,
-    message: 'Successfully found contacts!',
-    data: result,
-  });
-};
+//   res.status(200).json({
+//     status: 200,
+//     message: 'Successfully found contacts!',
+//     data: result,
+//   });
+// };
 
 export const handleGetContactById = async (req, res, next) => {
   const { contactId } = req.params;
@@ -75,8 +75,8 @@ export const patchContactController = async (req, res, next) => {
     data: result,
   });
 };
-export const deleteContactController = async (reg, res, next) => {
-  const { contactId } = reg.params;
+export const deleteContactController = async (req, res, next) => {
+  const { contactId } = req.params;
   const contact = await deleteContact(contactId);
 
   if (!contact) {
@@ -87,13 +87,17 @@ export const deleteContactController = async (reg, res, next) => {
   res.status(204).send();
 };
 export const getContactsController = async (req, res) => {
-  const { page, perPage } = parsePaginationParams(req.query);
+  const { page, perPage, totalItems, totalPage } = parsePaginationParams(
+    req.query,
+  );
   const { sortBy, sortOrder } = parseSortParams(req.query);
   const filter = parseFilterParams(req.query);
 
   const contacts = await getAllContacts({
     page,
     perPage,
+    totalItems,
+    totalPage,
     sortBy,
     sortOrder,
     filter,
@@ -101,7 +105,7 @@ export const getContactsController = async (req, res) => {
 
   res.json({
     status: 200,
-    message: 'Successfully found students!',
+    message: 'Successfully found contacts!',
     data: contacts,
   });
 };
