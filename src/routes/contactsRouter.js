@@ -11,7 +11,7 @@ import { validateBody } from '../middlewares/validateBody.js';
 import { createContactSchema } from '../validation/contactsValidation.js';
 import { isValidId } from '../middlewares/isValidId.js';
 import { updateContactSchema } from '../validation/contactsValidation.js';
-
+import { authenticate } from '../middlewares/authenticate.js';
 const router = express.Router();
 
 router.get('/', ctrlWrapper(getContactsController));
@@ -28,4 +28,9 @@ router.patch(
   ctrlWrapper(patchContactController),
 );
 router.delete('/:contactId', isValidId, ctrlWrapper(deleteContactController));
+
+router.use(authenticate);
+
+router.get('/', ctrlWrapper(getContactsController));
+
 export default router;
