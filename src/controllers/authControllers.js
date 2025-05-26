@@ -1,8 +1,12 @@
-import { registerUser } from '../services/auth.js';
-import { loginUser } from '../services/auth.js';
+import {
+  registerUser,
+  loginUser,
+  refreshUsersSession,
+  logoutUser,
+} from '../services/auth.js';
 import { THIRTY_DAYS } from '../index.js';
-import { refreshUsersSession } from '../services/auth.js';
-import { logoutUser } from '../services/auth.js';
+import createHttpError from 'http-errors';
+
 export const registerUserController = async (req, res) => {
   const user = await registerUser(req.body);
 
@@ -12,25 +16,32 @@ export const registerUserController = async (req, res) => {
     data: user,
   });
 };
-export const loginUserController = async (req, res) => {
-  const session = await loginUser(req.body);
+export const loginUserController = async (req, res, next) => {
+  try {
+    if (!req.body || !req.body.email || !req.body.password) {
+      throw createHttpError(400, 'Missing email or password');
+    }
+    const session = await loginUser(req.body);
 
-  res.cookie('refreshToken', session.refreshToken, {
-    httpOnly: true,
-    expires: new Date(Date.now() + THIRTY_DAYS),
-  });
-  res.cookie('sessionId', session._id, {
-    httpOnly: true,
-    expires: new Date(Date.now() + THIRTY_DAYS),
-  });
+    res.cookie('refreshToken', session.refreshToken, {
+      httpOnly: true,
+      expires: new Date(Date.now() + THIRTY_DAYS),
+    });
+    res.cookie('sessionId', session._id, {
+      httpOnly: true,
+      expires: new Date(Date.now() + THIRTY_DAYS),
+    });
 
-  res.json({
-    status: 200,
-    message: 'Successfully logged in an user!',
-    data: {
-      accessToken: session.accessToken,
-    },
-  });
+    res.json({
+      status: 200,
+      message: 'Successfully logged in an user!',
+      data: {
+        accessToken: session.accessToken,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 export const refreshUserSessionController = async (req, res) => {
   const session = await refreshUsersSession({

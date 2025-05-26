@@ -4,14 +4,15 @@ import createHttpError from 'http-errors';
 import { UsersCollection } from '../db/models/user.js';
 import { FIFTEEN_MINUTES, THIRTY_DAYS } from '../index.js';
 import { SessionsCollection } from '../db/models/session.js';
+
 export const registerUser = async (payload) => {
   const user = await UsersCollection.findOne({ email: payload.email });
   if (user) throw createHttpError(409, 'Email in use');
 
-  const encryptedPasswosd = await bcrypt.hash(payload.passwosd, 10);
+  const encryptedPassword = await bcrypt.hash(payload.password, 10);
   return await UsersCollection.create({
     ...payload,
-    passwosd: encryptedPasswosd,
+    password: encryptedPassword,
   });
 };
 
@@ -40,4 +41,29 @@ export const loginUser = async (payload) => {
 };
 export const logoutUser = async (sessionId) => {
   await SessionsCollection.deleteOne({ _id: sessionId });
+};
+export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
+  const session = await SessionsCollection.findOne({
+    _id: sessionId,
+    refreshToken,
+  });
+
+  if (!session) {
+    throw createHttpError(401, 'Session not found');
+  }
+
+  const isRefreshTokenExpired =
+    new Date() > new Date(session.refreshTokenValidUntil);
+
+  if (isRefreshTokenExpired) {
+    throw createHttpError(401, 'Refresh token expired');
+  }
+
+  const newAccessToken = randomBytes(30).toString('base64');
+
+  session.accessToken = newAccessToken;
+  session.accessTokenValidUntil = new Date(Date.now() + FIFTEEN_MINUTES);
+  await session.save();
+
+  return session;
 };

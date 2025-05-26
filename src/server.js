@@ -9,6 +9,7 @@ import { notFoundHandler } from './middlewares/notFoundHandler.js';
 
 import contactsRouter from './routes/contactsRouter.js';
 import cookieParser from 'cookie-parser';
+import authRouter from './routes/authRouter.js';
 const PORT = process.env.PORT || 3000;
 
 export const setupServer = () => {
@@ -24,7 +25,7 @@ export const setupServer = () => {
       },
     }),
   );
-
+  app.use('/auth', authRouter);
   app.use('/contacts', contactsRouter);
 
   app.use(errorHandler);
