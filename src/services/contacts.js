@@ -10,12 +10,12 @@ export const getAllContacts = async ({
   sortOrder = SORT_ORDER.ASC,
   filter = {},
 }) => {
-  page = Number(page);
+  page = Number(page) || 1;
   perPage = Number(perPage);
 
   const skip = (page - 1) * perPage;
 
-  const totalItems = await Contact.countDocuments(filter);
+  const totalItems = await Contact.countDocuments(query);
 
   const query = { userId, ...filter };
   const contacts = await Contact.find(query)
@@ -43,7 +43,7 @@ export const createContact = async (contactData) => {
   return newContact;
 };
 export const patchContact = async (contactId, updateData, userId) => {
-  const updatedContact = await Contact.findByIdAndUpdate(
+  const updatedContact = await Contact.findOneAndUpdate(
     { _id: contactId, userId },
     updateData,
     {

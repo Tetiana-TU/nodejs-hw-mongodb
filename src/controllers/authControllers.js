@@ -16,6 +16,16 @@ export const registerUserController = async (req, res) => {
     data: user,
   });
 };
+const setupSession = (res, session) => {
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnly: true,
+    expires: new Date(Date.now() + THIRTY_DAYS),
+  });
+  res.cookie('sessionId', session._id, {
+    httpOnly: true,
+    expires: new Date(Date.now() + THIRTY_DAYS),
+  });
+};
 export const loginUserController = async (req, res, next) => {
   try {
     if (!req.body || !req.body.email || !req.body.password) {
@@ -43,12 +53,12 @@ export const loginUserController = async (req, res, next) => {
     next(error);
   }
 };
-export const refreshUserSessionController = async (req, res) => {
+
+export const refreshUserSessionController = async (req, res, next) => {
   const session = await refreshUsersSession({
     sessionId: req.cookies.sessionId,
     refreshToken: req.cookies.refreshToken,
   });
-
   setupSession(res, session);
 
   res.json({

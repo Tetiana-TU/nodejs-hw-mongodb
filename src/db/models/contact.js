@@ -22,5 +22,5 @@ const contactSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
-
+export const sortByList = ['name', 'phoneNumber', 'email'];
 export const Contact = mongoose.model('Contact', contactSchema);
