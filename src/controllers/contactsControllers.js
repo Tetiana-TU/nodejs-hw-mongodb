@@ -7,13 +7,12 @@ import {
 } from '../services/contacts.js';
 import createHttpError from 'http-errors';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
-import { sortByList } from '../db/models/contact.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 
 export const getContactsController = async (req, res, next) => {
   const { page, perPage } = parsePaginationParams(req.query);
-  const { sortBy, sortOrder } = parseSortParams(req.query, sortByList);
+  const { sortBy, sortOrder } = parseSortParams(req.query);
   const filter = parseFilterParams(req.query);
 
   const data = await getAllContacts({
@@ -48,23 +47,8 @@ export const handleGetContactById = async (req, res, next) => {
   });
 };
 
-export const createContactController = async (req, res, next) => {
+export const createContactController = async (req, res) => {
   const newContact = await createContact({ ...req.body, userId: req.user._id });
-  // try {
-  //   const { name, phoneNumber, email, isFavourite, contactType } = req.body;
-
-  //   if (!name || !phoneNumber || !contactType) {
-  //     throw createHttpError(400, 'Missing required fields');
-  //   }
-
-  //   const newContact = await createContact({
-  //     name,
-  //     phoneNumber,
-  //     email,
-  //     isFavourite,
-  //     contactType,
-  //     userId: req.user._id,
-  //   });
 
   res.status(201).json({
     status: 201,
