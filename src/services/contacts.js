@@ -3,20 +3,22 @@ import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { SORT_ORDER } from '../index.js';
 
 export const getAllContacts = async ({
-  page = 2,
-  perPage = 4,
+  page,
+  perPage,
   sortBy = 'name',
   sortOrder = SORT_ORDER.ASC,
   filter = {},
+  userId,
 }) => {
   page = Number(page);
   perPage = Number(perPage);
 
   const skip = (page - 1) * perPage;
+  const finalFilter = { ...filter, userId };
 
-  const totalItems = await Contact.countDocuments(filter);
+  const totalItems = await Contact.countDocuments(finalFilter);
 
-  const contacts = await Contact.find(filter)
+  const contacts = await Contact.find(finalFilter)
     .skip(skip)
     .limit(perPage)
     .sort({ [sortBy]: sortOrder === SORT_ORDER.ASC ? 1 : -1 })
