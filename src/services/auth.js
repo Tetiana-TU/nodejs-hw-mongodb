@@ -4,7 +4,11 @@ import createHttpError from 'http-errors';
 import { UsersCollection } from '../db/models/user.js';
 import { FIFTEEN_MINUTES, THIRTY_DAYS } from '../index.js';
 import { SessionsCollection } from '../db/models/session.js';
+import jwt from 'jsonwebtoken';
 
+import { SMTP } from '../constants/index.js';
+
+import { sendEmail } from '../utils/sendMail.js';
 export const registerUser = async (payload) => {
   const user = await UsersCollection.findOne({ email: payload.email });
   if (user) throw createHttpError(409, 'Email in use');
@@ -67,4 +71,53 @@ export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
   await session.save();
 
   return session;
+};
+const {
+  JWT_SECRET,
+  APP_DOMAIN,
+  SMTP_HOST,
+  SMTP_PORT,
+  SMTP_USER,
+  SMTP_PASSWORD,
+  SMTP_FROM,
+} = process.env;
+export const requestResetToken = async (email) => {
+  const user = await UsersCollection.findOne({ email });
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: '5m' });
+  const resetLink = `${APP_DOMAIN}/reset-password?token=${token}`;
+
+  const transporter = nodemailer.createTransport({
+    host: SMTP_HOST,
+    port: parseInt(SMTP_PORT, 10),
+    secure: false,
+    auth: {
+      user: SMTP_USER,
+      pass: SMTP_PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: SMTP_FROM,
+    to: email,
+    subject: 'Reset your password',
+    html: `
+      <p>You requested to reset your password.</p>
+      <p>Click the link below to reset it (valid for 5 minutes):</p>
+      <a href="${resetLink}">${resetLink}</a>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (err) {
+    console.error('Email send failed:', err);
+    throw createHttpError(
+      500,
+      'Failed to send the email, please try again later.',
+    );
+  }
 };

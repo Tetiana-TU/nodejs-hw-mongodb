@@ -1,6 +1,10 @@
 import { Router } from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
-import { registerUserSchema, loginUserSchema } from '../validation/auth.js';
+import {
+  registerUserSchema,
+  loginUserSchema,
+  requestResetEmailSchema,
+} from '../validation/auth.js';
 import {
   registerUserController,
   loginUserController,
@@ -8,7 +12,7 @@ import {
   logoutUserController,
 } from '../controllers/authControllers.js';
 import { validateBody } from '../middlewares/validateBody.js';
-
+import { requestResetEmailController } from '../controllers/authControllers.js';
 const router = Router();
 
 router.post(
@@ -24,4 +28,10 @@ router.post(
 router.post('/refresh', ctrlWrapper(refreshUserSessionController));
 router.post('/logout', ctrlWrapper(logoutUserController));
 
+router.post(
+  '/send-reset-email',
+  validateBody(requestResetEmailSchema),
+  ctrlWrapper(requestResetEmailController),
+);
+// router.post('/reset-password');
 export default router;
