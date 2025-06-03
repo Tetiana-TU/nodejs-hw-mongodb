@@ -12,7 +12,9 @@ import { createContactSchema } from '../validation/contactsValidation.js';
 import { isValidId } from '../middlewares/isValidId.js';
 import { updateContactSchema } from '../validation/contactsValidation.js';
 import { authenticate } from '../middlewares/authenticate.js';
-
+import { upload } from '../middlewares/multer.js';
+import { checkRoles } from '../middlewares/checkRoles.js';
+import { ROLES } from '../constants/roles.js';
 const router = express.Router();
 
 router.use(authenticate);
@@ -21,11 +23,15 @@ router.get('/', ctrlWrapper(getContactsController));
 router.get('/:contactId', isValidId, ctrlWrapper(handleGetContactById));
 router.post(
   '/',
+  checkRoles(ROLES.TEACHER),
+  upload.single('photo'),
   validateBody(createContactSchema),
   ctrlWrapper(createContactController),
 );
+
 router.patch(
   '/:contactId',
+  checkRoles(ROLES.TEACHER, ROLES.PARENT),
   isValidId,
   validateBody(updateContactSchema),
   ctrlWrapper(patchContactController),
