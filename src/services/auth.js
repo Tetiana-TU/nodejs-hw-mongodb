@@ -92,6 +92,7 @@ export const requestResetToken = async (email) => {
       expiresIn: '5m',
     },
   );
+  const TEMPLATES_DIR = path.resolve('src', 'templates');
   const resetPasswordTemplatePath = path.join(
     TEMPLATES_DIR,
     'reset-password-email.html',
@@ -102,7 +103,7 @@ export const requestResetToken = async (email) => {
   const template = handlebars.compile(templateSource);
 
   const html = template({
-    name: user.name,
+    name: user.name || 'User',
     link: `${getEnvVar('APP_DOMAIN')}/reset-password?token=${resetToken}`,
   });
   try {
