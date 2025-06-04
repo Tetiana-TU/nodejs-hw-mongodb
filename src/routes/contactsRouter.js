@@ -31,10 +31,17 @@ router.post(
 
 router.patch(
   '/:contactId',
-  checkRoles(ROLES.TEACHER, ROLES.PARENT),
+  checkRoles(ROLES.TEACHER, ROLES.PARENT, ROLES.ADMIN),
   isValidId,
   validateBody(updateContactSchema),
   ctrlWrapper(patchContactController),
+);
+router.patch(
+  '/:contactId/photo',
+  checkRoles(ROLES.TEACHER, ROLES.PARENT, ROLES.ADMIN),
+  isValidId,
+  upload.single('photo'),
+  patchContactController,
 );
 router.delete('/:contactId', isValidId, ctrlWrapper(deleteContactController));
 
