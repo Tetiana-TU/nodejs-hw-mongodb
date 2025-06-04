@@ -30,7 +30,9 @@ export const setupServer = () => {
     }),
   );
   app.use('/uploads', express.static(UPLOAD_DIR));
-
+  app.get('/', (req, res) => {
+    res.send('API is running ✅');
+  });
   app.use('/auth', authRouter);
   app.use('/contacts', contactsRouter);
 
