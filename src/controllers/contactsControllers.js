@@ -56,8 +56,9 @@ export const createContactController = async (req, res) => {
       photoUrl = await saveFileToUploadDir(photo);
     }
   }
+  const { userId, ...restBody } = req.body;
   const newContact = await createContact({
-    ...req.body,
+    ...restBody,
     userId: req.user._id,
     photo: photoUrl,
   });
@@ -83,9 +84,9 @@ export const patchContactController = async (req, res, next) => {
     } else {
       photoUrl = await saveFileToUploadDir(photo);
     }
-
+    const { userId, ...restBody } = req.body;
     const result = await patchContact(contactId, req.user._id, {
-      ...req.body,
+      ...restBody,
       photo: photoUrl,
     });
 

@@ -34,14 +34,14 @@ export const getAllContacts = async ({
   };
 };
 export const getContactById = async (contactId, userId) => {
-  return await Contact.findOneAndUpdate({ _id: contactId, userId });
+  return await Contact.findOne({ _id: contactId, userId });
 };
 
 export const createContact = async (contactData) => {
   const newContact = await Contact.create(contactData);
   return newContact;
 };
-export const patchContact = async (contactId, updateData, userId) => {
+export const patchContact = async (contactId, userId, updateData) => {
   const updatedContact = await Contact.findOneAndUpdate(
     { _id: contactId, userId },
     updateData,

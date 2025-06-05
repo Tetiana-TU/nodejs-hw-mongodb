@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { json } from 'express';
 import {
   getContactsController,
   handleGetContactById,
@@ -13,35 +13,33 @@ import { isValidId } from '../middlewares/isValidId.js';
 import { updateContactSchema } from '../validation/contactsValidation.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { upload } from '../middlewares/multer.js';
-import { checkRoles } from '../middlewares/checkRoles.js';
-import { ROLES } from '../constants/roles.js';
-const router = express.Router();
 
+const router = express.Router();
+const jsonParser = json();
 router.use(authenticate);
 
 router.get('/', ctrlWrapper(getContactsController));
 router.get('/:contactId', isValidId, ctrlWrapper(handleGetContactById));
 router.post(
   '/',
-  checkRoles(ROLES.TEACHER),
   upload.single('photo'),
+  jsonParser,
   validateBody(createContactSchema),
   ctrlWrapper(createContactController),
 );
 
 router.patch(
   '/:contactId',
-  checkRoles(ROLES.TEACHER, ROLES.PARENT, ROLES.ADMIN),
   isValidId,
+  jsonParser,
   validateBody(updateContactSchema),
   ctrlWrapper(patchContactController),
 );
 router.patch(
   '/:contactId/photo',
-  checkRoles(ROLES.TEACHER, ROLES.PARENT, ROLES.ADMIN),
   isValidId,
   upload.single('photo'),
-  patchContactController,
+  ctrlWrapper(patchContactController),
 );
 router.delete('/:contactId', isValidId, ctrlWrapper(deleteContactController));
 

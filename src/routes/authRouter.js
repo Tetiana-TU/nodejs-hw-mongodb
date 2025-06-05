@@ -1,9 +1,9 @@
-import { Router } from 'express';
+import { json, Router } from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
   registerUserSchema,
   loginUserSchema,
-  requestResetEmailSchema,
+  sendResetEmailSchema,
   resetPasswordSchema,
 } from '../validation/auth.js';
 import {
@@ -11,13 +11,13 @@ import {
   loginUserController,
   refreshUserSessionController,
   logoutUserController,
-  requestResetEmailController,
+  sendResetEmailController,
   resetPasswordController,
 } from '../controllers/authControllers.js';
 import { validateBody } from '../middlewares/validateBody.js';
 
 const router = Router();
-
+const jsonParser = json();
 router.post(
   '/register',
   validateBody(registerUserSchema),
@@ -32,12 +32,14 @@ router.post('/refresh', ctrlWrapper(refreshUserSessionController));
 router.post('/logout', ctrlWrapper(logoutUserController));
 
 router.post(
-  '/request-reset-email',
-  validateBody(requestResetEmailSchema),
-  ctrlWrapper(requestResetEmailController),
+  '/send-reset-email',
+  jsonParser,
+  validateBody(sendResetEmailSchema),
+  ctrlWrapper(sendResetEmailController),
 );
 router.post(
   '/reset-password',
+  jsonParser,
   validateBody(resetPasswordSchema),
   ctrlWrapper(resetPasswordController),
 );
