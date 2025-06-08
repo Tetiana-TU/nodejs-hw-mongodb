@@ -10,7 +10,7 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 import {getPhotoUrl} from "../utils/getPhotoUrl.js";
-
+import {saveFileToUploadDir} from '../utils/saveFileToUploadDir.js';
 export const getContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
@@ -63,22 +63,28 @@ export const createContactController = async (req, res) => {
     data: result,
   });
 };
-export const patchContactController = async (req, res) => {
-  
+export const patchContactController = async (req, res, next) => {
+  try {
     const { contactId } = req.params;
     const userId = req.user._id;
+    console.log('patchContactController:', { contactId, userId, body: req.body });
 
-    const photoUrl = await getPhotoUrl(req.file);
-
-   const payload = {
+    const photo = req.file;
+    let photoUrl;
+    if (photo) {
+    photoUrl = await saveFileToUploadDir(photo);
+  }
+  
+       const payload = {
     ...req.body,
     ...(photoUrl && { photo: photoUrl }),
   };
-
-  const result = await patchContact(contactId, userId, payload);
+const result = await patchContact(
+    contactId, userId, payload) ;
+  
 
   if (!result) {
-    throw createHttpError(404, 'Contact not found!');
+    return next(createHttpError(404, 'Contact not found!'));
   }
 
   res.status(200).json({
@@ -86,6 +92,10 @@ export const patchContactController = async (req, res) => {
     message: 'Successfully patched a contact!',
     data: result,
   });
+}
+  catch (error) {
+    next(error); 
+}
 };
 
 export const deleteContactController = async (req, res, next) => {
