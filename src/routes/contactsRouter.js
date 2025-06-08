@@ -16,7 +16,7 @@ import { authenticate } from '../middlewares/authenticate.js';
 const router = express.Router();
 const jsonParser = express.json();
 
-router.get('/', ctrlWrapper(getContactsController));
+router.get('/', authenticate, ctrlWrapper(getContactsController));
 router.get('/:contactId', isValidId, ctrlWrapper(handleGetContactById));
 router.post(
   '/',
