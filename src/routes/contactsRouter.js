@@ -25,6 +25,7 @@ router.get(
 );
 router.post(
   '/',
+  jsonParser,
   upload.single('photo'),
   jsonParser,
   authenticate,
@@ -34,9 +35,10 @@ router.post(
 
 router.patch(
   '/:contactId',
+  isValidId,
+  jsonParser,
   upload.single('photo'),
   authenticate,
-  isValidId,
   validateBody(updateContactSchema),
   ctrlWrapper(patchContactController),
 );
