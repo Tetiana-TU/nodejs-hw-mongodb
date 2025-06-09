@@ -17,26 +17,35 @@ const router = express.Router();
 const jsonParser = express.json();
 
 router.get('/', authenticate, ctrlWrapper(getContactsController));
-router.get('/:contactId', authenticate, isValidId, ctrlWrapper(handleGetContactById));
+router.get(
+  '/:contactId',
+  authenticate,
+  isValidId,
+  ctrlWrapper(handleGetContactById),
+);
 router.post(
   '/',
   upload.single('photo'),
   jsonParser,
-      authenticate,
-    validateBody(createContactSchema),
+  authenticate,
+  validateBody(createContactSchema),
   ctrlWrapper(createContactController),
 );
 
 router.patch(
   '/:contactId',
-  isValidId,
   upload.single('photo'),
-  jsonParser,
   authenticate,
-      validateBody(updateContactSchema),
+  isValidId,
+  validateBody(updateContactSchema),
   ctrlWrapper(patchContactController),
 );
 
-router.delete('/:contactId', authenticate, isValidId, ctrlWrapper(deleteContactController));
+router.delete(
+  '/:contactId',
+  authenticate,
+  isValidId,
+  ctrlWrapper(deleteContactController),
+);
 
 export default router;
