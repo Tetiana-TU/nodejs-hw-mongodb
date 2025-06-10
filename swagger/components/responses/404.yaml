@@ -1,0 +1,4 @@
+# swagger/components/responses/404.yaml
+responses:
+'401':
+  $ref: '../../../components/responses/404.yaml'

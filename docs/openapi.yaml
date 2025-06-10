@@ -10,10 +10,23 @@ tags:
   # теги, що ви будете використовувати
 servers:
   - url: http://localhost:3000
-  - url: #посилання на задеплоєний сайт
+  - url: https://nodejs-hw-mongodb-h9p3.onrender.com/
 paths:
-  # тут будуть посилання на ендпоінти
-components:
+/contacts:
+  get:
+  $ref: ../swagger/paths/contacts/get.yaml
+  post:
+    $ref: ../swagger/paths/contacts/post.yaml
+/contacts/{contactId}:
+    get:
+      $ref: ../swagger/paths/contacts/{id}/get.yaml
+    patch:
+      $ref: ../swagger/paths/contacts/{id}/patch.yaml
+    delete:
+      $ref: ../swagger/paths/contacts/{id}/delete.yaml
+    post:
+      $ref: ../swagger/paths/contacts/{id}/post.yaml
+  components:
   securitySchemes:
     bearerAuth:
       type: http
