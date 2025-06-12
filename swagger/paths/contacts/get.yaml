@@ -1,106 +1,66 @@
-# swagger/paths/studens/{id}/get.yaml
 tags:
   - Contacts
-summary: Get page of contacts
-operationId: getAllContacts
-description: 'Get contacts'
+summary: Get list of contacts
+operationId: getContacts
+description: 'Get list of contacts with this endpoint'
 security:
   - bearerAuth: []
 parameters:
-  - in: query
-    name: page
+  - name: page
+    in: query
+    description: 'Page number for pagination (default: 1)'
+    required: false
     schema:
       type: integer
+      minimum: 1
       example: 1
-      default: 1
-    description: 'Page number'
-  - in: query
-    name: perPage
+
+  - name: perPage
+    in: query
+    description: 'Number of items per page (default: 10)'
+    required: false
     schema:
       type: integer
+      minimum: 1
+      maximum: 100
       example: 10
-      default: 10
-    description: 'Number of contacts per page'
-  - in: query
-    name: sortBy
+
+  - name: sortBy
+    in: query
+    description: 'Field name to sort by (default: _id)'
+    required: false
     schema:
       type: string
-      enum: ['name', 'phoneNumber', 'email']
-      example: 'name'
-      default: '_id'
-    description: 'Sort contacts by field name'
-  - in: query
-    name: sortOrder
+      example: name
+
+  - name: sortOrder
+    in: query
+    description: 'Sort order direction'
+    required: false
     schema:
       type: string
-      enum: ['asc', 'desc']
-      example: 'asc'
-      default: 'asc'
-    description: 'Sort order'
-  - in: query
-    name: isFavourite
+      enum: [asc, desc]
+      example: asc
+
+  - name: isFavourite
+    in: query
+    description: 'Show contacts with favourite status only'
+    required: false
     schema:
       type: boolean
       example: true
-      default: false
-    description: 'Whether is contact in favourites'
-  - in: query
-    name: contactType
+
+  - name: type
+    in: query
+    description: 'Type of the contact (default: personal)'
+    required: false
     schema:
       type: string
       enum: ['work', 'home', 'personal']
       example: personal
-    description: 'Type of contact'
+
 responses:
   '200':
-    description: 'Successfully found contacts!'
-    content:
-      application/json:
-        schema:
-          type: object
-          required:
-            - status
-            - message
-            - data
-          properties:
-            status:
-              type: integer
-              example: 200
-            message:
-              type: string
-              example: 'Successfully found contacts!'
-            data:
-              type: object
-              required:
-                - data
-                - page
-                - perPage
-                - totalItems
-                - totalPages
-                - hasNextPage
-                - hasPreviousPage
-              properties:
-                data:
-                  type: array
-                  items:
-                    $ref: '../../components/schemas/contact.yaml'
-                page:
-                  type: number
-                  example: 1
-                perPage:
-                  type: number
-                  example: 10
-                totalItems:
-                  type: number
-                  example: 24
-                totalPages:
-                  type: number
-                  example: 3
-                hasNextPage:
-                  type: boolean
-                  example: true
-                hasPreviousPage:
-                  type: boolean
-                  example: false
+    $ref: '../../components/responses/200 get contacts.yaml'
   '404':
     $ref: '../../components/responses/404.yaml'
