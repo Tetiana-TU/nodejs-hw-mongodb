@@ -32,7 +32,7 @@ properties:
   photo:
     description: "Link to contact's photo"
     type: string
-    example: 'https://res.cloudinary.com/dfbpenx2s/image/upload/v1731962580/psixivpamvlqluth3ufz.jpg'
+    example: 'https://res.cloudinary.com/dizemssqk/image/upload/v1749464985/czwxgqezmt9gxdogod0i.png'
   userId:
     description: "Contact's owner"
     type: string
