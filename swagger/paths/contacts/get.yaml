@@ -50,7 +50,7 @@ parameters:
       type: boolean
       example: true
 
-  - name: type
+  - name: contactType
     in: query
     description: 'Type of the contact (default: personal)'
     required: false
@@ -62,5 +62,7 @@ parameters:
 responses:
   '200':
     $ref: '../../components/responses/200 get contacts.yaml'
+  '401':
+    $ref: ../../components/responses/401.yaml
   '404':
     $ref: '../../components/responses/404.yaml'

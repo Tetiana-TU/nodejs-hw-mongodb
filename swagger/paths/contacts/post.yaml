@@ -2,10 +2,11 @@ tags:
   - Contacts
 summary: Create contact
 operationId: createContact
-description: 'Create a contact with payload'
+description: Create a new contact
 security:
   - bearerAuth: []
 requestBody:
+  required: true
   content:
     multipart/form-data:
       schema:
@@ -13,35 +14,41 @@ requestBody:
         required:
           - name
           - phoneNumber
-          - userId
+          - email
         properties:
           name:
-            description: "Contact's name"
             type: string
-            example: 'John Doe'
+            description: Contact's name
+            example: John Doe
+            minLength: 3
+            maxLength: 20
           phoneNumber:
-            description: "Contact's phone number"
             type: string
-            example: '0-800-500-300'
+            description: Contact's phone number
+            example: 0-800-500-300
           email:
-            description: "Contact's email"
             type: string
-            example: 'john.doe@example.com'
+            format: email
+            description: Contact's email
+            example: john.doe@example.com
           isFavourite:
-            description: 'Whether is contact in favourites'
             type: boolean
+            description: Whether the contact is marked as favourite
             example: false
           contactType:
-            description: 'Type of contact'
             type: string
-            enum: ['work', 'home', 'personal']
+            description: Type of contact
+            enum: [personal, home, work]
+            example: personal
           photo:
-            description: "Contact's photo file (upload)"
             type: string
             format: binary
+            description: Contact's photo file (upload)
 responses:
-  '200':
-    $ref: ../../components/responses/200 post contacts.yaml
-
-  '404':
-    $ref: '../../components/responses/404.yaml'
+  '201':
+    $ref: ../../components/responses/201.yaml
+  '400':
+    $ref: ../../components/responses/400.yaml
+  '401':
+    $ref: ../../components/responses/401.yaml
+  

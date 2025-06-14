@@ -36,4 +36,4 @@ properties:
   userId:
     description: "Contact's owner"
     type: string
-    example: 65e4decdd286b30065d54af9
+    example: '65e4decdd286b30065d54af9'
