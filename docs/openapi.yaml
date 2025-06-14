@@ -10,7 +10,8 @@ tags:
   - name: Contacts
     description: Operations with contacts.
 servers:
-  - url: https://nodejs-hw-mongodb-h9p3.onrender.com/api-docs/
+  - url: http://localhost:3000/api-docs 
+  - url: https://nodejs-hw-mongodb-h9p3.onrender.com
 paths:
   /contacts:
     get:
@@ -19,13 +20,11 @@ paths:
       $ref: ../swagger/paths/contacts/post.yaml
   /contacts/{contactId}:
     get:
-      $ref: ../swagger/paths/contacts/{id}/get.yaml
+      $ref: ../swagger/paths/contacts/by-id/get.yaml
     patch:
-      $ref: ../swagger/paths/contacts/{id}/patch.yaml
+      $ref: ../swagger/paths/contacts/by-id/patch.yaml
     delete:
-      $ref: ../swagger/paths/contacts/{id}/delete.yaml
-    post:
-      $ref: ../swagger/paths/contacts/{id}/post.yaml
+      $ref: ../swagger/paths/contacts/by-id/delete.yaml
 components:
   securitySchemes:
     bearerAuth:
